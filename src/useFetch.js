@@ -10,7 +10,7 @@ function useFetch(url) {
 
     fetch(url, { signal: abortCont.signal })
       .then((res) => {
-        if (!res.ok) {
+        if (res.ok) {
           throw Error("Uh, OH ! Could not fetch the data for that resource!");
         }
         return res.json();
@@ -18,7 +18,7 @@ function useFetch(url) {
       .then((data) => {
         setData(data);
         setIsPending(false);
-        seterror(null);
+        seterror();
       })
       .catch((err) => {
         if (err.name === "Abort Error") {
@@ -28,8 +28,9 @@ function useFetch(url) {
           seterror(err.message);
         }
       });
+   
 
-    return () => abortCont.abort();
+    return () => abortCont;
   }, [url]);
 
   return { data, isPending, error };
